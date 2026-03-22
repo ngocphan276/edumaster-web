@@ -1,0 +1,9 @@
+{
+  "name": "EduMaster - Nâng cao kỹ năng - Thay đổi sự nghiệp",
+  "description": "Hệ thống bán hàng, học tập và quản lý khóa học chuyên nghiệp với đầy đủ tính năng marketing, thanh toán và khu vực học viên.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
