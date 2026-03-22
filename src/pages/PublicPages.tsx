@@ -315,6 +315,93 @@ export const CoursesPage = () => {
 };
 
 export const CourseDetailPage = () => {
+  const [course, setCourse] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const path = window.location.pathname;
+    const match = path.match(/\/course\/([a-zA-Z0-9-]+)/);
+    const courseId = match ? match[1] : null;
+
+    const fetchCourse = async () => {
+      if (!courseId) {
+        setError('Không tìm thấy khóa học');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('courses')
+          .select('*')
+          .eq('id', courseId)
+          .single();
+
+        if (error) throw error;
+        setCourse(data);
+      } catch (err: any) {
+        console.error('Error fetching course:', err);
+        setError('Không tìm thấy khóa học');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourse();
+  }, []);
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+  };
+
+  const getDiscountPercent = (price: number, originalPrice: number) => {
+    if (!originalPrice || originalPrice <= price) return 0;
+    return Math.round(((originalPrice - price) / originalPrice) * 100);
+  };
+
+  const courseBenefits = [
+    'Xây dựng ứng dụng hoàn chỉnh từ A-Z',
+    'Làm chủ công nghệ và công cụ hiện đại',
+    'Phát triển tư duy và kỹ năng chuyên môn',
+    'Thực hành với dự án thực tế',
+    'Hỗ trợ và giải đáp nhanh chóng',
+    'Nhận chứng chỉ hoàn thành khóa học'
+  ];
+
+  const courseChapters = [
+    { title: 'Phần 1: Giới thiệu tổng quan', lessons: course?.total_lessons ? Math.floor(course.total_lessons * 0.15) : 5, time: '2 giờ' },
+    { title: 'Phần 2: Nền tảng kiến thức', lessons: course?.total_lessons ? Math.floor(course.total_lessons * 0.25) : 10, time: '4 giờ' },
+    { title: 'Phần 3: Thực hành dự án', lessons: course?.total_lessons ? Math.floor(course.total_lessons * 0.35) : 15, time: '6 giờ' },
+    { title: 'Phần 4: Nâng cao & Tối ưu', lessons: course?.total_lessons ? Math.floor(course.total_lessons * 0.25) : 10, time: '4 giờ' },
+    { title: 'Phần 5: Hoàn thiện & Deploy', lessons: course?.total_lessons ? Math.floor(course.total_lessons * 0.1) : 5, time: '2 giờ' }
+  ];
+
+  if (loading) {
+    return (
+      <div className="pt-32 pb-24 min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error || !course) {
+    return (
+      <div className="pt-32 pb-24 min-h-screen flex flex-col items-center justify-center">
+        <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+          <Search size={48} className="text-slate-400" />
+        </div>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Không tìm thấy khóa học</h2>
+        <p className="text-slate-500 mb-6">Khóa học bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+        <Link to="/courses" className="bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-emerald-500 transition-all">
+          Xem tất cả khóa học
+        </Link>
+      </div>
+    );
+  }
+
+  const discount = getDiscountPercent(course.price, course.original_price);
+
   return (
     <div className="pt-32 pb-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -322,32 +409,46 @@ export const CourseDetailPage = () => {
           <div className="lg:col-span-2 space-y-12">
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full uppercase">Bán chạy nhất</span>
-                <span className="text-slate-400 text-sm">Cập nhật 20/03/2026</span>
+                {course.students_count > 500 && (
+                  <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full uppercase">Bán chạy</span>
+                )}
+                {discount > 0 && (
+                  <span className="bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full uppercase">Giảm giá {discount}%</span>
+                )}
+                <span className="text-slate-400 text-sm">
+                  {course.total_lessons} bài học • {course.total_hours} giờ
+                </span>
               </div>
+              
               <h1 className="text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
-                Lập trình Fullstack Web với React & Node.js: Từ Zero đến Hero
+                {course.title}
               </h1>
+              
               <p className="text-xl text-slate-600 leading-relaxed">
-                Khóa học toàn diện nhất giúp bạn trở thành lập trình viên Fullstack chuyên nghiệp. Học từ cơ bản đến nâng cao với các dự án thực tế.
+                {course.description}
               </p>
+              
               <div className="flex flex-wrap items-center gap-8 pt-4">
                 <div className="flex items-center gap-3">
-                  <img src="https://picsum.photos/seed/instructor/100/100" className="w-12 h-12 rounded-full" referrerPolicy="no-referrer" />
+                  <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-lg">
+                    {course.instructor_name?.charAt(0) || 'G'}
+                  </div>
                   <div>
                     <p className="text-xs text-slate-500">Giảng viên</p>
-                    <p className="text-sm font-bold text-slate-900">Alex Tran</p>
+                    <p className="text-sm font-bold text-slate-900">{course.instructor_name}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex text-amber-400">
-                    {[1,2,3,4,5].map(i => <Star key={i} size={16} fill="currentColor" />)}
+                    {[1,2,3,4,5].map(i => (
+                      <Star key={i} size={16} fill={i <= Math.round(course.rating || 4.5) ? "currentColor" : "none"} />
+                    ))}
                   </div>
-                  <span className="text-sm font-bold text-slate-900">4.9</span>
-                  <span className="text-sm text-slate-500">(1,240 đánh giá)</span>
+                  <span className="text-sm font-bold text-slate-900">{course.rating?.toFixed(1) || '4.5'}</span>
+                  <span className="text-sm text-slate-500">({course.students_count || 0} đánh giá)</span>
                 </div>
                 <div className="text-sm text-slate-500">
-                  <span className="font-bold text-slate-900">12,450</span> học viên
+                  <span className="font-bold text-slate-900">{course.students_count || 0}</span> học viên
                 </div>
               </div>
             </div>
@@ -355,14 +456,7 @@ export const CourseDetailPage = () => {
             <div className="bg-slate-50 p-8 rounded-[2rem] space-y-6">
               <h2 className="text-2xl font-bold text-slate-900">Bạn sẽ học được gì?</h2>
               <div className="grid md:grid-cols-2 gap-4">
-                {[
-                  'Xây dựng ứng dụng Web hoàn chỉnh',
-                  'Làm chủ React Hooks & Context API',
-                  'Thiết kế database với MongoDB',
-                  'Triển khai ứng dụng lên Cloud',
-                  'Kỹ năng debug và tối ưu code',
-                  'Tư duy giải quyết vấn đề'
-                ].map((item, i) => (
+                {courseBenefits.map((item, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <CheckCircle2 size={20} className="text-emerald-600 shrink-0 mt-0.5" />
                     <span className="text-sm text-slate-600">{item}</span>
@@ -374,12 +468,10 @@ export const CourseDetailPage = () => {
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-slate-900">Nội dung khóa học</h2>
               <div className="space-y-4">
-                {[
-                  { title: 'Chương 1: Giới thiệu & Cài đặt môi trường', lessons: 5, time: '45 phút' },
-                  { title: 'Chương 2: Cơ bản về HTML, CSS & JS hiện đại', lessons: 12, time: '3 giờ' },
-                  { title: 'Chương 3: Làm quen với React & Component', lessons: 15, time: '5 giờ' },
-                  { title: 'Chương 4: Xây dựng Backend với Node.js & Express', lessons: 10, time: '4 giờ' }
-                ].map((chapter, i) => (
+                <p className="text-sm text-slate-500">
+                  Tổng cộng <span className="font-bold text-slate-900">{course.total_lessons}</span> bài học chia thành <span className="font-bold text-slate-900">5 phần</span> với thời lượng <span className="font-bold text-slate-900">{course.total_hours}</span> giờ học.
+                </p>
+                {courseChapters.map((chapter, i) => (
                   <div key={i} className="border border-slate-100 rounded-2xl overflow-hidden">
                     <button className="w-full flex items-center justify-between p-6 bg-white hover:bg-slate-50 transition-colors">
                       <div className="flex items-center gap-4">
@@ -397,21 +489,42 @@ export const CourseDetailPage = () => {
                 ))}
               </div>
             </div>
+
+            <div className="bg-gradient-to-br from-emerald-50 to-indigo-50 p-8 rounded-[2rem] space-y-6">
+              <h2 className="text-2xl font-bold text-slate-900">Yêu cầu trước khi học</h2>
+              <ul className="space-y-3">
+                {[
+                  'Máy tính có kết nối internet ổn định',
+                  'Không cần kinh nghiệm lập trình - phù hợp cho người mới bắt đầu',
+                  'Mong muốn học hỏi và phát triển bản thân',
+                  'Dành ít nhất 1-2 giờ mỗi ngày để học và thực hành'
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm text-slate-600">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           <aside className="space-y-8">
             <div className="sticky top-32 bg-white border border-slate-100 rounded-[2.5rem] shadow-2xl shadow-slate-200 overflow-hidden">
               <div className="relative h-56">
-                <img src="https://picsum.photos/seed/course-preview/800/600" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                <button className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-emerald-600 shadow-xl">
+                <img src={course.thumbnail} className="w-full h-full object-cover" referrerPolicy="no-referrer" alt={course.title} />
+                <button className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-emerald-600 shadow-xl hover:scale-110 transition-transform">
                   <PlayCircle size={40} fill="currentColor" />
                 </button>
               </div>
               <div className="p-8 space-y-6">
                 <div className="flex items-center gap-4">
-                  <span className="text-3xl font-extrabold text-slate-900">799.000đ</span>
-                  <span className="text-lg text-slate-400 line-through">1.200.000đ</span>
-                  <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded">-35%</span>
+                  <span className="text-3xl font-extrabold text-slate-900">{formatPrice(course.price)}</span>
+                  {course.original_price > course.price && (
+                    <>
+                      <span className="text-lg text-slate-400 line-through">{formatPrice(course.original_price)}</span>
+                      <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded">-{discount}%</span>
+                    </>
+                  )}
                 </div>
                 <div className="space-y-3">
                   <button className="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-100 active:scale-95">
@@ -426,17 +539,22 @@ export const CourseDetailPage = () => {
                 <div className="pt-6 border-t border-slate-100 space-y-4">
                   <p className="font-bold text-sm text-slate-900">Khóa học bao gồm:</p>
                   <ul className="space-y-3">
-                    {[
-                      { icon: <PlayCircle size={18} />, text: '24 giờ video bài giảng' },
-                      { icon: <Clock size={18} />, text: 'Truy cập trọn đời' },
-                      { icon: <Award size={18} />, text: 'Chứng chỉ hoàn thành' },
-                      { icon: <Settings size={18} />, text: 'Hỗ trợ trực tiếp 1:1' }
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-sm text-slate-600">
-                        <span className="text-emerald-600">{item.icon}</span>
-                        {item.text}
-                      </li>
-                    ))}
+                    <li className="flex items-center gap-3 text-sm text-slate-600">
+                      <span className="text-emerald-600"><PlayCircle size={18} /></span>
+                      {course.total_hours} giờ video bài giảng
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-slate-600">
+                      <span className="text-emerald-600"><Clock size={18} /></span>
+                      Truy cập trọn đời
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-slate-600">
+                      <span className="text-emerald-600"><Award size={18} /></span>
+                      Chứng chỉ hoàn thành
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-slate-600">
+                      <span className="text-emerald-600"><Settings size={18} /></span>
+                      Hỗ trợ 1:1 từ giảng viên
+                    </li>
                   </ul>
                 </div>
               </div>
