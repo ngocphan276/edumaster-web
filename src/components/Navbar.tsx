@@ -34,10 +34,10 @@ export const Navbar = () => {
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform">
-            <BookOpen size={24} />
+          <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center p-1.5 shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform">
+            <img src="/logo.png" alt="EduMaster" className="w-full h-full object-contain filter brightness-0 invert" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900">EduFlow</span>
+          <span className="text-xl font-bold tracking-tight text-slate-900">EduMaster</span>
         </Link>
 
         {/* Desktop Nav */}

@@ -56,7 +56,7 @@ export const HomePage = () => {
                 Hơn 10,000+ học viên đã tham gia
               </div>
               <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1] tracking-tight">
-                Nâng tầm sự nghiệp với <span className="text-emerald-600">EduFlow</span>
+                Nâng tầm sự nghiệp với <span className="text-emerald-600">EduMaster</span>
               </h1>
               <p className="text-xl text-slate-600 leading-relaxed max-w-xl">
                 Hệ thống học tập thực chiến từ các chuyên gia hàng đầu. Chúng tôi không chỉ dạy kiến thức, chúng tôi đồng hành cùng sự thành công của bạn.
@@ -204,7 +204,7 @@ export const HomePage = () => {
       <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-            <h2 className="text-4xl font-bold text-slate-900 tracking-tight">Tại sao chọn EduFlow?</h2>
+            <h2 className="text-4xl font-bold text-slate-900 tracking-tight">Tại sao chọn EduMaster?</h2>
             <p className="text-slate-600">Chúng tôi xây dựng hệ thống dựa trên trải nghiệm thực tế của hàng ngàn học viên.</p>
           </div>
 

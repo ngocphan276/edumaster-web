@@ -8,10 +8,10 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white">
-                <BookOpen size={24} />
+              <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center p-1.5">
+                <img src="/logo.png" alt="EduMaster" className="w-full h-full object-contain filter brightness-0 invert" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white">EduFlow</span>
+              <span className="text-xl font-bold tracking-tight text-white">EduMaster</span>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed">
               Nền tảng học trực tuyến hàng đầu Việt Nam, giúp bạn làm chủ kỹ năng thực chiến từ các chuyên gia.
@@ -55,7 +55,7 @@ export const Footer = () => {
         </div>
         
         <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
-          <p>© 2026 EduFlow. All rights reserved.</p>
+          <p>© 2026 EduMaster. All rights reserved.</p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-white transition-colors">Facebook</a>
             <a href="#" className="hover:text-white transition-colors">YouTube</a>

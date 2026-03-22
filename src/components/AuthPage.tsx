@@ -54,10 +54,10 @@ export const AuthPage = ({ type }: { type: 'login' | 'register' }) => {
       >
         <div className="text-center space-y-4">
           <Link to="/" className="inline-flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform">
-              <BookOpen size={24} />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">EduFlow</span>
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-xl mb-6 p-2">
+                <img src="/logo.png" alt="EduMaster" className="w-full h-full object-contain" />
+              </div>
+            <span className="text-xl font-bold tracking-tight text-slate-900">EduMaster</span>
           </Link>
           <h1 className="text-3xl font-extrabold text-slate-900">
             {type === 'login' ? 'Chào mừng trở lại!' : 'Bắt đầu hành trình học tập'}

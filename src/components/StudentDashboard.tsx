@@ -64,10 +64,10 @@ export const StudentDashboard = () => {
       <aside className="hidden lg:flex w-72 bg-white border-r border-slate-200 flex-col fixed inset-y-0 left-0 z-50">
         <div className="p-8 border-b border-slate-100">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform">
-              <BookOpen size={24} />
+            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center p-1.5 shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform">
+              <img src="/logo.png" alt="EduMaster" className="w-full h-full object-contain filter brightness-0 invert" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">EduFlow</span>
+            <span className="text-xl font-bold tracking-tight text-slate-900">EduMaster</span>
           </Link>
         </div>
         
