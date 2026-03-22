@@ -14,7 +14,8 @@ import {
   User,
   LayoutDashboard,
   Settings,
-  LogOut
+  LogOut,
+  Shield
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
@@ -29,11 +30,23 @@ export const StudentDashboard = () => {
   const navigate = useNavigate();
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string>('student');
 
   useEffect(() => {
-    const fetchEnrollments = async () => {
+    const fetchData = async () => {
       if (!user) return;
-      const { data, error } = await supabase
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+      
+      if (profile) {
+        setUserRole(profile.role || 'student');
+      }
+
+      const { data } = await supabase
         .from('enrollments')
         .select(`
           *,
@@ -50,13 +63,15 @@ export const StudentDashboard = () => {
       setLoading(false);
     };
 
-    fetchEnrollments();
+    fetchData();
   }, [user]);
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
   };
+
+  const isAdmin = userRole === 'admin';
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -77,13 +92,15 @@ export const StudentDashboard = () => {
             { name: 'Khóa học của tôi', icon: <BookOpen size={20} />, path: '/my-courses' },
             { name: 'Chứng chỉ', icon: <Award size={20} />, path: '/certificates' },
             { name: 'Cài đặt', icon: <Settings size={20} />, path: '/settings' },
+            ...(isAdmin ? [{ name: 'Admin Panel', icon: <Shield size={20} />, path: '/admin', active: false, isAdmin: true }] : []),
           ].map(item => (
             <Link 
               key={item.name}
               to={item.path}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all",
-                item.active ? "bg-emerald-600 text-white shadow-lg shadow-emerald-100" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                item.active ? "bg-emerald-600 text-white shadow-lg shadow-emerald-100" : 
+                item.isAdmin ? "bg-purple-100 text-purple-700 hover:bg-purple-200" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
               )}
             >
               {item.icon}
