@@ -8,6 +8,15 @@ import { AuthPage } from './components/AuthPage';
 import { StudentDashboard } from './components/StudentDashboard';
 import { CoursePlayer } from './components/CoursePlayer';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { AdminRoute } from './components/AdminRoute';
+import {
+  AdminDashboard,
+  AdminCourses,
+  AdminUsers,
+  AdminEnrollments,
+  AdminAnalytics,
+  AdminSettings
+} from './pages/admin';
 
 // Layout for public pages
 const PublicLayout = () => (
@@ -40,6 +49,16 @@ export default function App() {
           <Route path="/dashboard" element={<StudentDashboard />} />
           <Route path="/player/:courseId" element={<CoursePlayer />} />
           <Route path="/player/:courseId/:lessonId" element={<CoursePlayer />} />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route element={<AdminRoute />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/courses" element={<AdminCourses />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/enrollments" element={<AdminEnrollments />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
         </Route>
 
         {/* Fallback */}
